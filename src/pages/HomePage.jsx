@@ -12,10 +12,12 @@ import {
   TextField,
   Chip,
 } from "@mui/material";
-import { Edit, Delete, Visibility } from "@mui/icons-material";
+import { Edit, Delete, Visibility, Download } from "@mui/icons-material";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 import axios from "axios";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import Header from "@/components/Header";
 
 const HomePage = () => {
@@ -29,7 +31,6 @@ const HomePage = () => {
   const [editFormData, setEditFormData] = useState({});
   const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
-  // Fetch users function
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -48,7 +49,6 @@ const HomePage = () => {
     }
   };
 
-  // Update user function
   const updateUser = async (userId) => {
     try {
       const token = sessionStorage.getItem("token");
@@ -66,7 +66,6 @@ const HomePage = () => {
     }
   };
 
-  // Delete user function
   const deleteUser = async (userId) => {
     const token = sessionStorage.getItem("token");
     try {
@@ -83,7 +82,6 @@ const HomePage = () => {
     }
   };
 
-  // Fetch users on component mount
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -120,7 +118,52 @@ const HomePage = () => {
     }));
   };
 
-  // DataGrid columns
+  const downloadPDF = () => {
+    try {
+      const doc = new jsPDF();
+      
+      doc.setFontSize(20);
+      doc.text("User Management Report", 14, 22);
+      
+      doc.setFontSize(10);
+      doc.text(`Generated on: ${format(new Date(), "dd-MM-yyyy HH:mm")}`, 14, 30);
+      
+      const tableData = users.map((user) => [
+        user.name || "-",
+        user.email || "-",
+        user.mobile || "-",
+        user.state || "-",
+        user.city || "-",
+        user.createdAt ? format(new Date(user.createdAt), "dd-MM-yyyy") : "-"
+      ]);
+
+      autoTable(doc, {
+        head: [["Name", "Email", "Mobile", "State", "City", "Created Date"]],
+        body: tableData,
+        startY: 40,
+        styles: {
+          fontSize: 8,
+          cellPadding: 3,
+        },
+        headStyles: {
+          fillColor: [59, 130, 246], 
+          textColor: 255,
+          fontStyle: "bold",
+        },
+        alternateRowStyles: {
+          fillColor: [248, 250, 252], 
+        },
+        margin: { top: 40 },
+      });
+
+      doc.save(`user-management-report-${format(new Date(), "dd-MM-yyyy")}.pdf`);
+      toast.success("PDF downloaded successfully!");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast.error("Failed to generate PDF");
+    }
+  };
+
   const columns = [
     {
       field: "name",
@@ -217,10 +260,22 @@ const HomePage = () => {
       <Header />
       <div className="flex-1 px-[15%] py-[5%]">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-blue-700">User Management</h1>
-          <p className="text-gray-600 mt-2">
-            Manage and monitor all user accounts in your system
-          </p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-blue-700">User Management</h1>
+              <p className="text-gray-600 mt-2">
+                Manage and monitor all user accounts in your system
+              </p>
+            </div>
+            <Button
+              variant="contained"
+              className="bg-green-600 hover:bg-green-700 text-white shadow-lg"
+              onClick={downloadPDF}
+              startIcon={<Download />}
+            >
+              Download PDF Report
+            </Button>
+          </div>
         </div>
 
         <div className="mb-6">

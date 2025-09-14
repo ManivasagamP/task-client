@@ -1,8 +1,10 @@
 import { LoginForm } from "../components/login-form";
+import AuthHeader from "../components/AuthHeader";
 
 const LoginPage = () => {
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-blue-100 relative overflow-hidden">
+      <AuthHeader page="Login" />
       {/* Background decorative elements */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse" />
@@ -11,7 +13,7 @@ const LoginPage = () => {
       </div>
       
       {/* Main content */}
-      <div className="relative z-10 flex min-h-screen w-full items-center justify-center p-6 md:p-10">
+      <div className="relative z-10 flex min-h-screen w-full items-center justify-center p-6 md:p-10 pt-24">
         <div className="w-full max-w-md">
           <LoginForm />
         </div>

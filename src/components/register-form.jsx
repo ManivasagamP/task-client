@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label"
 import toast from 'react-hot-toast'
 import axios from 'axios'
 import { uploadImageToCloudinary, validateImageFile } from '../lib/imageUpload'
+import AuthHeader from './AuthHeader'
 
 // Zod validation schema
 const registerSchema = z.object({
@@ -120,8 +121,10 @@ export function RegisterForm() {
   }
 
   return (
-    <div className="flex flex-col gap-6 items-center justify-center min-h-screen">
-      <Card className="w-full max-w-md shadow-2xl border border-blue-200/50 bg-white/80 backdrop-blur-sm">
+    <div className="min-h-screen flex flex-col">
+      <AuthHeader page="Register" />
+      <div className="flex-1 flex items-center justify-center p-6 pt-24">
+        <Card className="w-full max-w-md shadow-2xl border border-blue-200/50 bg-white/80 backdrop-blur-sm">
         <CardHeader className="text-center pb-8">
           <CardTitle className="text-3xl font-bold text-blue-700 mb-2">
             Join Us Today
@@ -288,6 +291,7 @@ export function RegisterForm() {
           </form>
         </CardContent>
       </Card>
+      </div>
     </div>
   );  
 }

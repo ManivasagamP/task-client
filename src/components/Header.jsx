@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button'
 
 const Header = () => {
 
+  const user = JSON.parse(sessionStorage.getItem('user'))
+
   const handleLogout = () => {
     sessionStorage.removeItem('isAuth')
     sessionStorage.removeItem('token')
@@ -27,14 +29,17 @@ const Header = () => {
           </span>
         </div>
 
-        {/* Sign Out Button */}
+        <div className="flex items-center gap-4">
+          <span className="text-white">{`Welcome ${user?.name}`}</span>
         <Button 
-          onClick={handleLogout}
+          onClick={handleLogout}  
           variant="outline"
           className="text-white border-white hover:bg-white hover:text-[#7A85C1] transition-colors duration-200"
         >
           Sign Out
         </Button>
+        </div>
+        
       </div>
     </header>
   )
